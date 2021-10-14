@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Kiriman;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
-use function PHPSTORM_META\map;
-
-class PendidikanRequest extends FormRequest
+class AgendaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,8 +16,8 @@ class PendidikanRequest extends FormRequest
     {
         if ($this->method() == Request::METHOD_POST)
             return true;
-        $pendidikan = $this->route('pendidikan');
-        return auth()->user()->id == $pendidikan->id_user;
+        $agenda = $this->route('agenda');
+        return auth()->user()->id == $agenda->id_user;
     }
 
     /**
@@ -31,12 +28,14 @@ class PendidikanRequest extends FormRequest
     public function rules()
     {
         return [
-            'instansi',
-            'jenjang',
-            'fakultas',
-            'jurusan',
-            'tahun_masuk',
-            'tahun_keluar'
+            // 'id_user' => 'required|integer',
+            'title',
+            'lokasi',
+            'tanggal',
+            'waktu',
+            'konten',
+            'photo',
+            'status'
         ];
     }
 }

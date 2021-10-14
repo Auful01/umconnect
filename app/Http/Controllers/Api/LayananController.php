@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LayananRequest;
-use App\Models\Kiriman;
+// use App\Models\Layanan;
 use App\Models\Layanan;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class LayananController extends Controller
 {
@@ -20,8 +21,8 @@ class LayananController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        $layanan = Layanan::with('user')->where('id_user', $user->id);
+        // $user = auth()->user();
+        $layanan = Layanan::all();
 
         return $this->apiSuccess($layanan);
     }
@@ -37,14 +38,17 @@ class LayananController extends Controller
         $request->validated();
 
         $user = auth()->user();
-        $kiriman = Kiriman::create([
+        if ($request->file('gambar')) {
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
+        $layanan = Layanan::create([
             'id_user' => $user->id,
-            'gambar' => $request->gambar,
+            'gambar' => $img_name,
             'judul' => $request->judul,
             'konten' => $request->konten
         ]);
 
-        return $this->apiSuccess($kiriman);
+        return $this->apiSuccess($layanan);
     }
 
     /**
@@ -65,12 +69,23 @@ class LayananController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(LayananRequest $request, Layanan $layanan)
+    public function update(Request $request, Layanan $layanan)
     {
-        $request->validated();
+
+
+        // return $request['judul'];
+        // $request->validated();
 
         $user = auth()->user();
-        $layanan->gambar = $request['gambar'];
+        $gbrlama = $layanan->gambar;
+        if ($request->file('gambar') != null) {
+            Storage::delete('public/' . $layanan->gambar);
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        } else {
+            $img_name = $gbrlama;
+        }
+
+        $layanan->gambar = $img_name;
         $layanan->judul = $request['judul'];
         $layanan->konten = $request['konten'];
         $layanan->save();
@@ -83,11 +98,11 @@ class LayananController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kiriman $kiriman)
+    public function destroy(Layanan $layanan)
     {
-        if (auth()->user()->id == $kiriman->id_user) {
-            $kiriman->delete();
-            return $this->apiSuccess($kiriman);
+        if (auth()->user()->id == $layanan->id_user) {
+            $layanan->delete();
+            return $this->apiSuccess($layanan);
         }
 
         return $this->apiError(

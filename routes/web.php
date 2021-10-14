@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\KirimanController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('menu.user.dashboard');
 });
 
 Auth::routes(['verify' => true]);
@@ -23,3 +25,5 @@ Auth::routes(['verify' => true]);
 // Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::resource('kiriman', KirimanController::class);
+Route::resource('user', UserController::class);

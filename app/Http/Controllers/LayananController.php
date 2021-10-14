@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Layanan;
 use Illuminate\Http\Request;
 
 class LayananController extends Controller
@@ -13,7 +14,8 @@ class LayananController extends Controller
      */
     public function index()
     {
-        //
+        $layanan = Layanan::all();
+        return view('menu.admin.layanan', ['layanan' => $layanan]);
     }
 
     /**
@@ -34,7 +36,20 @@ class LayananController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $user = auth()->user();
+        if ($request->file('gambar')) {
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
+
+        Layanan::create([
+            'id_user' => $user->id,
+            'gambar' => $img_name,
+            'judul' => $request->judul,
+            'konten' => $request->konten
+        ]);
+
+        return redirect()->route('layanan.index');
     }
 
     /**

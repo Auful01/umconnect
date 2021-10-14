@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AgendaController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\KirimanController;
 use App\Http\Controllers\Api\LayananController;
@@ -29,10 +30,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
+
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::apiResource('/kiriman', KirimanController::class);
+    Route::apiResource('/api-kiriman', KirimanController::class);
     Route::apiResource('/produk', ProdukController::class);
     Route::apiResource('/layanan', LayananController::class);
     Route::apiResource('/profil', ProfilController::class);
     Route::apiResource('/pendidikan', PendidikanController::class);
+    Route::apiResource('/agenda', AgendaController::class);
 });
+
+Route::apiResource('/kiriman-public', KirimanController::class);
+Route::apiResource('/layanan-public', LayananController::class);
+Route::apiResource('/agenda-public', AgendaController::class);

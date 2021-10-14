@@ -8,6 +8,8 @@ use App\Models\Produk;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProdukController extends Controller
 {
@@ -20,7 +22,7 @@ class ProdukController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $produk = Produk::with('users')->where('id_user', $user->id);
+        $produk = Produk::all();
 
         return $this->apiSuccess($produk);
     }
@@ -36,9 +38,13 @@ class ProdukController extends Controller
         $request->validated();
 
         $user = auth()->user();
+        // return Auth::user()->id;
+        if ($request->file('gambar')) {
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
         $produk = Produk::create([
             'id_user' => $user->id,
-            'gambar' => $request->gambar,
+            'gambar' => $img_name,
             'harga' => $request->harga,
             'nama_produk' => $request->nama_produk,
             'deskripsi' => $request->deskripsi
@@ -68,7 +74,14 @@ class ProdukController extends Controller
     public function update(ProdukRequest $request, Produk $produk)
     {
         $request->validated();
-        $produk->gambar = $request['gambar'];
+        $gbrlama = $produk->gambar;
+        if ($request->file('gambar') != null) {
+            Storage::delete('storage/' . $produk->gambar);
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        } else {
+            $img_name = $gbrlama;
+        }
+        $produk->gambar = $img_name;
         $produk->harga = $request['harga'];
         $produk->nama_produk = $request['nama_produk'];
         $produk->deskripsi = $request['deskripsi'];

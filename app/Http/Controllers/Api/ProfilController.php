@@ -8,6 +8,7 @@ use App\Models\Profil;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ProfilController extends Controller
 {
@@ -34,7 +35,9 @@ class ProfilController extends Controller
     public function store(ProfilRequest $request)
     {
         $request->validated();
-
+        if ($request->file('photo')) {
+            $img_name = $request->file('photo')->store('gambar', 'public');
+        }
         $user = auth()->user();
         $profil = Profil::create([
             'id_user' => $user->id,
@@ -43,7 +46,7 @@ class ProfilController extends Controller
             'tgl_lahir' => $request->tgl_lahir,
             'domisili' => $request->domisili,
             'wa' => $request->wa,
-            'photo' => $request->photo
+            'photo' => $img_name
         ]);
 
         return $this->apiSuccess($profil);
@@ -71,12 +74,21 @@ class ProfilController extends Controller
     {
         $request->validated();
         // $profil->id_user =  $request['id_user'];
+        $gbrlama = $profil->photo;
+        // return $gbrlama;
+        // return $request['photo'];
+        if ($request['photo'] != null) {
+            Storage::delete('storage/' . $profil->photo);
+            $img_name = $request->file('photo')->store('photo', 'public');
+        } else {
+            $img_name = $gbrlama;
+        }
         $profil->jenis_kelamin = $request['jenis_kelamin'];
         $profil->nim = $request['nim'];
         $profil->tgl_lahir = $request['tgl_lahir'];
         $profil->domisili = $request['domisili'];
         $profil->wa = $request['wa'];
-        $profil->photo = $request['photo'];
+        $profil->photo = $img_name;
         $profil->save();
 
         return $this->apiSuccess($profil);

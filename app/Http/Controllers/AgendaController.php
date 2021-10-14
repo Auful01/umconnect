@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use Illuminate\Http\Request;
 
 class AgendaController extends Controller
@@ -13,7 +14,8 @@ class AgendaController extends Controller
      */
     public function index()
     {
-        //
+        $agenda = Agenda::all();
+        return view('menu.admin.agenda', ['agenda' => $agenda]);
     }
 
     /**
@@ -34,7 +36,7 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Agenda::create([]);
     }
 
     /**

@@ -23,8 +23,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Dashboard</title>
-
+  <title>UMConnect</title>
+    <link rel="icon" href="{{asset('images/umlogo.png')}}">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -45,13 +45,19 @@
   <link rel="stylesheet" href="{{asset('plugins/daterangepicker/daterangepicker.css')}}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.min.css')}}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+  <link rel="stylesheet" href="{{asset('css/toggle.css')}}">
+  {{-- <script src="https://cod e.jquery.com/jquery-3.6.0.js"></script> --}}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="{{asset('dist/img/AdminLTELogo.png')}}" alt="AdminLTELogo" height="60" width="60">
+    <img class="animation__shake" src="{{asset('images/umlogo.png')}}" alt="AdminLTELogo" height="100" width="100">
   </div>
 
   <!-- Navbar -->
@@ -68,7 +74,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
+            <h1 class="m-0">
+                @if (Request::segment(1) != '' && 'Beranda' && '/')
+                {{ Str::ucfirst(Request::segment(1))  }}
+                @else
+                Beranda
+            @endif
+
+        </h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -663,9 +676,15 @@
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section> --}}
-    @yield('content')
+    <div class="card p-5 mx-5">
+        <div class="card-body">
+            @yield('content')
+        </div>
+    </div>
     <!-- /.content -->
   </div>
+  {{-- Modal --}}
+  @yield('modal')
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
@@ -683,40 +702,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script>
-<!-- Bootstrap 4 -->
-<script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-<!-- ChartJS -->
-<script src="{{asset('plugins/chart.js/Chart.min.js')}}"></script>
-<!-- Sparkline -->
-<script src="{{asset('plugins/sparklines/sparkline.js')}}"></script>
-<!-- JQVMap -->
-<script src="{{asset('plugins/jqvmap/jquery.vmap.min.js')}}"></script>
-<script src="{{asset('plugins/jqvmap/maps/jquery.vmap.usa.js')}}"></script>
-<!-- jQuery Knob Chart -->
-<script src="{{asset('plugins/jquery-knob/jquery.knob.min.js')}}"></script>
-<!-- daterangepicker -->
-<script src="{{asset('plugins/moment/moment.min.js')}}"></script>
-<script src="{{asset('plugins/daterangepicker/daterangepicker.js')}}"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="{{asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
-<!-- Summernote -->
-<script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
-<!-- overlayScrollbars -->
-<script src="{{asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
-<!-- AdminLTE App -->
-<script src="{{asset('dist/js/adminlte.js')}}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{asset('dist/js/demo.js')}}"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{asset('dist/js/pages/dashboard.js')}}"></script>
+@include('layouts.js')
 </body>
 </html>
 

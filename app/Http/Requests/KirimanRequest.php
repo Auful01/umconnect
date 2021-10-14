@@ -14,9 +14,11 @@ class KirimanRequest extends FormRequest
      */
     public function authorize()
     {
+
         if ($this->method() == Request::METHOD_POST)
             return true;
-        $kiriman = $this->route('kiriman');
+        $kiriman = $this->route('api-kiriman');
+        // return auth()->user()->id;
         return auth()->user()->id == $kiriman->id_user;
     }
 
@@ -28,8 +30,8 @@ class KirimanRequest extends FormRequest
     public function rules()
     {
         return [
-            'gambar' => 'required|string|max:255',
-            'konten' => 'required',
+            'gambar',
+            'konten'
         ];
     }
 }

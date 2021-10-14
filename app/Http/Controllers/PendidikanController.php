@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pendidikan;
 use Illuminate\Http\Request;
 
 class PendidikanController extends Controller
@@ -13,7 +14,8 @@ class PendidikanController extends Controller
      */
     public function index()
     {
-        //
+        $pendidikan = Pendidikan::all();
+        return view('menu.admin.pendidikan', ['pendidikan' => $pendidikan]);
     }
 
     /**

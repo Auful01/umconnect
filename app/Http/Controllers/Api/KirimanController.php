@@ -8,6 +8,8 @@ use App\Models\Kiriman;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class KirimanController extends Controller
 {
@@ -19,8 +21,8 @@ class KirimanController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        $kiriman = Kiriman::with('user')->where('id_user', $user->id)->get();
+        // return Auth::user();
+        $kiriman = Kiriman::all();
 
         return $this->apiSuccess($kiriman);
     }
@@ -33,12 +35,19 @@ class KirimanController extends Controller
      */
     public function store(KirimanRequest $request)
     {
+
+        // return $request->file('gambar');
         $request->validated();
 
+        if ($request->file('gambar')) {
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        } else {
+            return $this->apiError('Eror', 404, 'Gambar harus diisi');
+        }
         $user = auth()->user();
         $kiriman = Kiriman::create([
             'id_user' => $user->id,
-            'gambar' => $request->gambar,
+            'gambar' => $img_name,
             'konten' => $request->konten
         ]);
         // $kiriman->user()->associate($user);
@@ -53,9 +62,10 @@ class KirimanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Kiriman $kiriman)
+    public function show($id)
     {
-        return $this->apiSuccess($kiriman->load('user'));
+        $kiriman = Kiriman::find($id);
+        return $this->apiSuccess($kiriman);
     }
 
     /**
@@ -65,12 +75,26 @@ class KirimanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(KirimanRequest $request, Kiriman $kiriman)
+    public function update(Request $request,  $id)
     {
-        $request->validated();
-        $kiriman->gambar = $request['gambar'];
+        // return $kiriman->gambar;
+        // if ($kiriman->id) {
+        // $request->validated();
+
+        $kiriman = Kiriman::find($id);
+        $gbrlama = $kiriman->gambar;
+        if ($request->file('gambar') != null) {
+            Storage::delete('storage/' . $kiriman->gambar);
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        } else {
+            $img_name = $gbrlama;
+        }
+        $kiriman->id_user = auth()->user()->id;
+        $kiriman->gambar = $img_name;
         $kiriman->konten = $request['konten'];
         $kiriman->save();
+        // }
+
         return $this->apiSuccess($kiriman->load('user'));
     }
 
@@ -80,8 +104,9 @@ class KirimanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kiriman $kiriman)
+    public function destroy($id)
     {
+        $kiriman = Kiriman::find($id);
         if (auth()->user()->id == $kiriman->id_user) {
             $kiriman->delete();
             return $this->apiSuccess($kiriman);

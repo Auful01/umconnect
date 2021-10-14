@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kiriman;
 use Illuminate\Http\Request;
 
 class KirimanController extends Controller
@@ -13,7 +14,8 @@ class KirimanController extends Controller
      */
     public function index()
     {
-        //
+        $kiriman = Kiriman::all();
+        return view('menu.admin.kiriman', ['kiriman' => $kiriman]);
     }
 
     /**
@@ -23,7 +25,6 @@ class KirimanController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -34,7 +35,20 @@ class KirimanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return $request->file('gambar');
+
+        if ($request->file('gambar')) {
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
+
+        $user = auth()->user();
+        Kiriman::create([
+            'id_user' => $user->id,
+            'gambar' => $img_name,
+            'konten' => $request->konten
+        ]);
+
+        return redirect()->route('kiriman.index');
     }
 
     /**
