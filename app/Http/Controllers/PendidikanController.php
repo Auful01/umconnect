@@ -36,7 +36,18 @@ class PendidikanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $pendidikan = Pendidikan::create([
+            'id_user' => $request->id_user,
+            'instansi' => $request->instansi,
+            'jenjang' => $request->jenjang,
+            'fakultas' => $request->fakultas,
+            'jurusan' => $request->jurusan,
+            'tahun_masuk' => $request->tahun_masuk,
+            'tahun_keluar' => $request->tahun_keluar,
+            // 'wa' => $request->wa,
+        ]);
+
+        return redirect()->route('user.show', $pendidikan->id_user);
     }
 
     /**
@@ -70,7 +81,16 @@ class PendidikanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $pendidikan = Pendidikan::find($id);
+        $pendidikan->instansi = $request->instansi;
+        $pendidikan->fakultas = $request->fakultas;
+        $pendidikan->jenjang = $request->jenjang;
+        $pendidikan->jurusan = $request->jurusan;
+        $pendidikan->tahun_masuk = $request->tahun_masuk;
+        $pendidikan->tahun_keluar = $request->tahun_keluar;
+        $pendidikan->save();
+
+        return redirect()->route('user.show', $pendidikan->id_user);
     }
 
     /**

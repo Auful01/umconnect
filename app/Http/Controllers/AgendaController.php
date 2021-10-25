@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AgendaController extends Controller
 {
@@ -36,7 +37,20 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
-        Agenda::create([]);
+        if ($request->file('photo')) {
+            $img_name = $request->file('photo')->store('photo', 'public');
+        }
+        $agenda = Agenda::create([
+            'id_user' => $request->id_user,
+            'title' => $request->title,
+            'photo' => $img_name,
+            'konten' => $request->konten,
+            'lokasi' => $request->lokasi,
+            'tanggal' => $request->tanggal,
+            'waktu' => $request->waktu
+        ]);
+
+        return redirect()->route('agendaWeb.index');
     }
 
     /**
@@ -47,7 +61,8 @@ class AgendaController extends Controller
      */
     public function show($id)
     {
-        //
+        $agenda = Agenda::find($id);
+        return view('');
     }
 
     /**
@@ -70,7 +85,21 @@ class AgendaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $agenda = Agenda::find($id)->first();
+        $img_name = $agenda->photo;
+        if ($request->file('photo') != null) {
+            Storage::delete('storage/' . $agenda->photo);
+            $img_name = $request->file('photo')->store('photo', 'public');
+        }
+        $agenda->photo = $img_name;
+        $agenda->lokasi = $request->lokasi;
+        $agenda->tanggal = $request->tanggal;
+        $agenda->konten = $request->konten;
+        $agenda->title = $request->title;
+        $agenda->waktu = $request->waktu;
+        $agenda->save();
+
+        return redirect()->route('agendaWeb.index');
     }
 
     /**
@@ -81,6 +110,21 @@ class AgendaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Agenda::find($id)->delete();
+        return redirect()->route('agendaWeb.index');
+    }
+
+    public function switchAgendaStatus(Request $request)
+    {
+        // return $request;
+        $agenda = Agenda::find($request->id);
+        $agenda->status = $request->status;
+        $agenda->save();
+
+
+        // dd("Email sudah terkirim.");
+
+        $msg = ['Sukses', 'Data Berhasil ditambah'];
+        return with($msg);
     }
 }

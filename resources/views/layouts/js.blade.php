@@ -5,25 +5,63 @@
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable();
-    })
-</script>
-<script>
-    $(document).ready(function () {
-        $('.custom-select').on('change', function () {
-            var target = $('option:selected').val()
-            if(target != null){
-                $('.placeholder').remove();
-            }else{
-                var opt = new Option('Choose the level', 0)
-                $('.custom-select').append(opt)
-            }
 
+        $('.edit-user').on('click', function () {
+            console.log('coba');
         })
 
+        $('.btn-editKiriman').on('click', function () {
+            let id = $(this).data('id');
+            let gbr = $(this).data('img');
+            let konten = $(this).data('konten');
+            let url = $(this).data('url');
+            $('.gambar').attr('src',gbr)
+            $('.konten').val(konten)
+            $('.url').attr('action', url)
+        })
+
+        // $('td .switch .status-switch').on('change', function () {
+        //     let id = $(this).data('id');
+        //     let status = $(this).prop('checked') == true ? 1 : 0;
+        //     // $('.status-switch').load('changeStatus/'.id)
+        //     console.log('coba');
+        //     $.ajax({
+        //         url : "/changeStatus",
+        //         type : "GET",
+        //         dataType : 'json',
+        //         data : {
+        //             'id' : id
+        //         },
+        //         success:function data(data){
+        //             console.log(data.success);
+        //         }
+        //         // type : 'post',
+        //         //   dataType : 'json',
+        //         //   success : success
+        //     });
+        // })
+
+        // $('.custom-select').on('change', function () {
+        //     var target = $('option:selected').val()
+        //     if(target != null){
+        //         $('.placeholder').remove();
+        //     }else{
+        //         var opt = new Option('Choose the level', 0)
+        //         $('.custom-select').append(opt)
+        //     }
+
+        // })
+
 
     })
 
+
+    $(document).ready(function () {
+
+    })
 </script>
+
+
 
 
 

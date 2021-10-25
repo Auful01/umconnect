@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kiriman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class KirimanController extends Controller
 {
@@ -82,7 +83,17 @@ class KirimanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $kiriman = Kiriman::find($id);
+        $img_name = $kiriman->gambar;
+        if ($request->file('gambar') != null) {
+            Storage::delete('storage/' . $kiriman->gambar);
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
+        $kiriman->gambar = $img_name;
+        $kiriman->konten = $request->konten;
+        $kiriman->save();
+
+        return redirect()->route('kiriman.index');
     }
 
     /**
@@ -93,6 +104,9 @@ class KirimanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $kiriman = Kiriman::find($id);
+        Storage::delete('storage/' . $kiriman->gambar);
+        $kiriman->delete();
+        return redirect()->route('kiriman.index');
     }
 }

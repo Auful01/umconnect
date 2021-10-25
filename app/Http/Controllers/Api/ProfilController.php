@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfilRequest;
+use App\Models\Pendidikan;
+// use App\Models\Profil;
 use App\Models\Profil;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProfilController extends Controller
@@ -21,9 +24,28 @@ class ProfilController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $profil = Profil::with('users')->where('id_user', $user->id);
-
-        return $this->apiSuccess($profil);
+        $profil = Profil::all();
+        $pendidikan = Pendidikan::all();
+        $lengkap = DB::table('users')
+            ->join('profil', 'profil.id_user', '=', 'users.id')
+            ->join('pendidikan', 'pendidikan.id_user', '=', 'users.id')
+            ->orderBy('users.id', 'asc')
+            ->get(array(
+                'name',
+                'profil.nim',
+                'profil.tgl_lahir',
+                'profil.domisili',
+                'profil.wa',
+                'profil.photo',
+                'profil.jenis_kelamin',
+                'pendidikan.instansi',
+                'pendidikan.jenjang',
+                'pendidikan.fakultas',
+                'pendidikan.jurusan',
+                'pendidikan.tahun_masuk',
+                'pendidikan.tahun_keluar'
+            ));
+        return $this->apiSuccess(['profil' => $profil, 'pendidikan' => $pendidikan]);
     }
 
     /**
@@ -58,9 +80,31 @@ class ProfilController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Profil $profil)
+    public function show($id)
     {
-        return $this->apiSuccess($profil->load('user'));
+        $user = auth()->user();
+        $pendidikan = Pendidikan::find($id);
+        $profil = Profil::find($id);
+        $lengkap = DB::table('users')
+            ->join('profil', 'profil.id_user', '=', 'users.id')
+            ->join('pendidikan', 'pendidikan.id_user', '=', 'users.id')
+            ->orderBy('users.id', 'asc')
+            ->get(array(
+                'name',
+                'profil.nim',
+                'profil.tgl_lahir',
+                'profil.domisili',
+                'profil.wa',
+                'profil.photo',
+                'profil.jenis_kelamin',
+                'pendidikan.instansi',
+                'pendidikan.jenjang',
+                'pendidikan.fakultas',
+                'pendidikan.jurusan',
+                'pendidikan.tahun_masuk',
+                'pendidikan.tahun_keluar'
+            ));
+        return $this->apiSuccess(['profil' => $profil, 'pendidikan' => $pendidikan]);
     }
 
     /**

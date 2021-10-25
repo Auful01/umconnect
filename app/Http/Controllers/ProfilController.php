@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profil;
+// use App\Models\Profil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfilController extends Controller
 {
@@ -35,7 +37,18 @@ class ProfilController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return $request;
+
+        $profil = Profil::create([
+            'id_user' => $request->id_user,
+            'nim' => $request->nim,
+            'domisili' => $request->domisili,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'tgl_lahir' => $request->tgl_lahir,
+            'wa' => $request->wa
+        ]);
+
+        return redirect()->route('user.show', $profil->id_user);
     }
 
     /**
@@ -69,7 +82,15 @@ class ProfilController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $profil = Profil::find($id);
+        $profil->nim = $request->nim;
+        $profil->domisili = $request->domisili;
+        $profil->jenis_kelamin = $request->jenis_kelamin;
+        $profil->tgl_lahir = $request->tgl_lahir;
+        $profil->wa = $request->wa;
+        $profil->save();
+
+        return redirect()->route('user.show', $profil->id_user);
     }
 
     /**
@@ -81,5 +102,21 @@ class ProfilController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function uploadFoto(Request $request, $id)
+    {
+        // return [$request, $id];
+        $profil = Profil::find($id);
+        if ($profil->photo != null) {
+            Storage::delete('storage/' . $profil->photo);
+        }
+        // return $request->file('photo');
+        $img_name = $request->file('photo')->store('photo', 'public');
+        $profil->photo = $img_name;
+        $profil->save();
+
+        return redirect()->route('user.show', $id);
     }
 }

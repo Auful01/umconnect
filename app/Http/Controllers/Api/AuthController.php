@@ -7,11 +7,10 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Traits\ApiResponse;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Http\Response;
 // use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -26,6 +25,7 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
         $user =  User::create([
+            // 'id' => i,
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -36,7 +36,14 @@ class AuthController extends Controller
         return $this->apiSuccess([
             'token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'email' => $user->email,
+                'level' => $user->level,
+                'status' => $user->status,
+                'updated_at' => $user->updated_at,
+                'created_at' => $user->created_at,
+            ]
         ]);
     }
 
@@ -45,7 +52,11 @@ class AuthController extends Controller
         $validated = $request->validated();
 
         if (!Auth::attempt($validated)) {
-            return $this->apiError('Credentials not match', HttpResponse::HTTP_UNAUTHORIZED);
+            return $this->apiError('Credentials not match', Response::HTTP_UNAUTHORIZED, 'Tolong Masukkan akun yang sesuai');
+        }
+
+        if (Auth::user()->status == 0) {
+            return $this->apiError('Verification Error', Response::HTTP_UNAUTHORIZED, 'Akun belum diverifikasi');
         }
 
         $user = User::where('email', $validated['email'])->first();
@@ -64,7 +75,7 @@ class AuthController extends Controller
             auth()->user()->tokens()->delete();
             return $this->apiSuccess('Tokens revoked');
         } catch (\Throwable $e) {
-            throw new HttpResponseException($this->apiError(null, HttpResponse::HTTP_INTERNAL_SERVER_ERROR,));
+            throw new HttpResponseException($this->apiError(null, Response::HTTP_INTERNAL_SERVER_ERROR,));
         }
     }
 }

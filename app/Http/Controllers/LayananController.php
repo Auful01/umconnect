@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Layanan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LayananController extends Controller
 {
@@ -49,7 +50,7 @@ class LayananController extends Controller
             'konten' => $request->konten
         ]);
 
-        return redirect()->route('layanan.index');
+        return redirect()->route('layananWeb.index');
     }
 
     /**
@@ -83,7 +84,19 @@ class LayananController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $layanan = Layanan::find($id);
+        $img_name = $layanan->gambar;
+        if ($request->file('gambar') != null) {
+            Storage::delete('storage/' . $layanan->gambar);
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
+
+        $layanan->gambar = $img_name;
+        $layanan->judul = $request->judul;
+        $layanan->konten = $request->konten;
+        $layanan->save();
+
+        return redirect()->route('layananWeb.index');
     }
 
     /**
@@ -94,6 +107,7 @@ class LayananController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Layanan::find($id)->delete();
+        return redirect()->route('layananWeb.index');
     }
 }

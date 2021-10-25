@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProdukController extends Controller
 {
@@ -36,7 +37,19 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ($request->file('gambar')) {
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
+
+        Produk::create([
+            'id_user' => auth()->user()->id,
+            'gambar' => $img_name,
+            'harga' => $request->harga,
+            'nama_produk' => $request->nama_produk,
+            'deskripsi' => $request->deskripsi
+        ]);
+
+        return redirect()->route('produkWeb.index');
     }
 
     /**
@@ -47,7 +60,8 @@ class ProdukController extends Controller
      */
     public function show($id)
     {
-        //
+        $produk = Produk::find($id);
+        return;
     }
 
     /**
@@ -70,7 +84,19 @@ class ProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $produk = Produk::find($id);
+        $img_name = $produk->gambar;
+        if ($request->file('gambar') != null) {
+            Storage::delete('storage/' . $produk->gambar);
+            $img_name = $request->file('gambar')->store('gambar', 'public');
+        }
+        $produk->gambar = $img_name;
+        $produk->nama_produk = $request->nama_produk;
+        $produk->harga = $request->harga;
+        $produk->deskripsi = $request->deskripsi;
+        $produk->save();
+
+        return redirect()->route('produkWeb.index');
     }
 
     /**
@@ -81,6 +107,7 @@ class ProdukController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Produk::find($id)->delete();
+        return redirect()->route('produkWeb.index');
     }
 }
