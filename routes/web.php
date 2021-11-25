@@ -22,22 +22,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [DashboardController::class, 'index']);
 
 Auth::routes(['verify' => true]);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::resource('kiriman', KirimanController::class);
-    Route::resource('user', UserController::class);
-    Route::resource('profil-user', ProfilController::class);
-    Route::resource('pendidikan-user', PendidikanController::class);
-    Route::resource('layananWeb', LayananController::class);
-    Route::resource('agendaWeb', AgendaController::class);
-    Route::resource('produkWeb', ProdukController::class);
-    Route::post('upfoto/{id}', [ProfilController::class, 'uploadFoto'])->name('upfoto');
+    Route::middleware(['level:1'])->group(function () {
+        Route::get('/', [DashboardController::class, 'index']);
+
+        // Route::middleware(['status:1'])->group(function () {
+        Route::resource('kiriman', KirimanController::class);
+        Route::resource('user', UserController::class);
+        Route::resource('profil-user', ProfilController::class);
+        Route::resource('pendidikan-user', PendidikanController::class);
+        Route::resource('layananWeb', LayananController::class);
+        Route::resource('agendaWeb', AgendaController::class);
+        Route::resource('produkWeb', ProdukController::class);
+        Route::post('upfoto/{id}', [ProfilController::class, 'uploadFoto'])->name('upfoto');
+        // });
+    });
 });
 
 Route::get('/changeStatus', [UserController::class, 'changeStatus'])->name('change-status');

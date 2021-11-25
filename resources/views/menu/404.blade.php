@@ -1,27 +1,3 @@
-{{-- @extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection --}}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -33,9 +9,9 @@
     <meta name="author" content="">
     <title>404 Error Template for Bootstrap</title>
     <!-- Bootstrap core CSS -->
-    <link href="{{asset('error/css/bootstrap.css')}}" rel="stylesheet"><!-- Custom styles for this template -->
+    <link href="css/bootstrap.css" rel="stylesheet"><!-- Custom styles for this template -->
     <!-- Custom styles for this template -->
-    <link href="{{asset('error/css/style.css')}}" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
   </head>
 
@@ -47,7 +23,7 @@
       <div class="col-md-12">
         <h1><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 404</h1>
         <h2>Oops... Page Not Found!</h2>
-
+        
           <form action="#" method="post">
             <input type="text" placeholder="Search..." name="search">
             <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -79,7 +55,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{asset('error/js/jquery.js')}}"></script>
-    <script src="{{asset('error/js/bootstrap.js')}}"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
   </body>
 </html>

@@ -82,7 +82,7 @@ class ProfilController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $profil = Profil::find($id);
+        $profil = Profil::with('user')->where('id_user',$id);
         $profil->nim = $request->nim;
         $profil->domisili = $request->domisili;
         $profil->jenis_kelamin = $request->jenis_kelamin;

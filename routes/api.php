@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/agenda', AgendaController::class);
 });
 
+Route::apiResource('/produk-public', ProdukController::class);
 Route::apiResource('/kiriman-public', KirimanController::class);
 Route::apiResource('/layanan-public', LayananController::class);
 Route::apiResource('/agenda-public', AgendaController::class);

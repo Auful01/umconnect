@@ -20,6 +20,7 @@
             $('.url').attr('action', url)
         })
 
+
         // $('td .switch .status-switch').on('change', function () {
         //     let id = $(this).data('id');
         //     let status = $(this).prop('checked') == true ? 1 : 0;

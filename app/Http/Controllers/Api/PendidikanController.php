@@ -9,6 +9,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
 class PendidikanController extends Controller
 {
     use ApiResponse;

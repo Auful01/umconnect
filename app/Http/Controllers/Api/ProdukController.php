@@ -36,7 +36,7 @@ class ProdukController extends Controller
     public function store(ProdukRequest $request)
     {
         $request->validated();
-
+        return auth()->user();
         $user = auth()->user();
         // return Auth::user()->id;
         if ($request->file('gambar')) {

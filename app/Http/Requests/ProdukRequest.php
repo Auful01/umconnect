@@ -16,7 +16,7 @@ class ProdukRequest extends FormRequest
     {
         if ($this->method() == Request::METHOD_POST)
             return true;
-        $produk = $this->route('produk');
+        $produk = $this->route('produk-public');
         return auth()->user()->id == $produk->id_user;
     }
 

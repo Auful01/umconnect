@@ -99,7 +99,8 @@
                  type : "GET",
                  dataType : 'json',
                  data : {
-                     'id' : id
+                     'id' : id,
+                     'status' :status,
                  },
                  success:function data(data){
                      console.log(data.success);
